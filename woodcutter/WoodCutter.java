@@ -1,7 +1,7 @@
 /*
  * Script framework example provided by Worthy
  * http://bit.ly/1M1w4sp
- * 
+ * 1
  * Paint example provided by Deltac0
  * http://bit.ly/1F0WwAj
  * 
