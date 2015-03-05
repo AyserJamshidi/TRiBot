@@ -11,8 +11,11 @@ import scripts.woodcutter.api.Node;
 
 public class Bank extends Node {
 
+	public static String BSTATUS;
+
 	@Override
 	public void execute() {
+		BSTATUS = "1";
 		General.println("Inventory is full, doing stuff...");
 		while(Inventory.isFull()) {
 			RSObject[] bankBooth = Objects.findNearest(20, 11748);
@@ -36,11 +39,12 @@ public class Bank extends Node {
 			}
 		}
 		Banking.close();
+		BSTATUS = "0";
 	}
 
 	@Override
 	public boolean validate() {
-		return WalkToBank.playerArea.contains(Player.getPosition()) && Inventory.isFull();
+		return WalkToBank.bankArea.contains(Player.getPosition()) && Inventory.isFull();
 	}
 
 }
