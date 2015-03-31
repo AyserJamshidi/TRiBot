@@ -21,6 +21,7 @@ public class Potter extends Script implements Ending, MouseActions {
 	private int nextDrink = General.random(9, 26);
 	private int varyAmount = General.random(-4, 0);
 	private int DrankAmount = 0;
+	private boolean mouseOffScreen = false;
 	
 	@Override
 	public void onEnd() {
@@ -56,8 +57,10 @@ public class Potter extends Script implements Ending, MouseActions {
 				println("Drinking at.. " + (nextDrink + varyAmount));
 				if(Skills.getCurrentLevel(Skills.SKILLS.PRAYER) < (nextDrink + varyAmount)) {
 					if(Skills.getCurrentLevel(Skills.SKILLS.PRAYER) < 9) {
+						println("Drinking twice.");
 						DrinkPrayerPot(2);
 					} else if(Skills.getCurrentLevel(Skills.SKILLS.PRAYER) < 26) {
+						println("Drinking once.");
 						DrinkPrayerPot(1);
 					} else {
 						println("Prayer level is acceptable.");
@@ -65,10 +68,10 @@ public class Potter extends Script implements Ending, MouseActions {
 				}
 			}
 			if(usingOverload) {
-				if(Inventory.find(OVERLOADS).length <= 0)
-					usingOverload = false;
-				if(!(Skills.getCurrentLevel(Skills.SKILLS.HITPOINTS) < 51)) {
-					println("Overload won't kill us, checking stats..");
+				//if(Inventory.find(OVERLOADS).length <= 0)
+				//	usingOverload = false;
+				if(Skills.getCurrentLevel(Skills.SKILLS.HITPOINTS) > 50) {
+					println("Overload won't kill us, checking stats...");
 					if(Skills.getCurrentLevel(Skills.SKILLS.ATTACK) <= Skills.getActualLevel(Skills.SKILLS.ATTACK)
 						&& Skills.getCurrentLevel(Skills.SKILLS.STRENGTH) <= Skills.getActualLevel(Skills.SKILLS.STRENGTH)
 						&& Skills.getCurrentLevel(Skills.SKILLS.DEFENCE) <= Skills.getActualLevel(Skills.SKILLS.DEFENCE)
@@ -82,8 +85,10 @@ public class Potter extends Script implements Ending, MouseActions {
 				}
 				
 			}
-			if(usingPrayerPot)
-				println("Prayer potion drinking at... " + (ChangeNextDrink() + ChangeVaryAmount()));
+			if(mouseOffScreen == false) {
+				println("Variable mouseOffScreen = 0.  Moving mouse off the screen. (This will be improved in the future)");
+				MoveMouseOffScreen();
+			}
 			println("Sleeping for 6 seconds..");
 			sleep(6000);
 		}
@@ -100,9 +105,10 @@ public class Potter extends Script implements Ending, MouseActions {
 						
 						while(waitTime < 4) {
 							sleep(10);
-							if(Inventory.find(PRAYERPOTS).length > 0)
+							if(Inventory.find(PRAYERPOTS).length < 0)
 								break;
 							if(Inventory.find(PRAYERPOTS)[0].getID() != CapturedPotID) {
+								println("We drank!");
 								DrankAmount++;
 								break;
 							}
@@ -127,10 +133,10 @@ public class Potter extends Script implements Ending, MouseActions {
 						
 						while(waitTime < 4) {
 							sleep(10);
-							if(Inventory.find(PRAYERPOTS).length > 0)
+							if(Inventory.find(PRAYERPOTS).length < 0)
 								break;
 							if(Inventory.find(PRAYERPOTS)[0].getID() != CapturedPotID) {
-								println("INSIDE BREAK");
+								println("We drank!");
 								DrankAmount++;
 								break;
 							}
@@ -142,10 +148,12 @@ public class Potter extends Script implements Ending, MouseActions {
 					}
 				}
 			}
+			println("Prayer potion drinking changed to... " + (ChangeNextDrink() + ChangeVaryAmount()));
 			DrankAmount = 0;
 		} else {
 			println("We're out of prayer pots.");
 		}
+		mouseOffScreen = false;
  	}
 	
 	private void DrinkOverload() {
@@ -156,6 +164,7 @@ public class Potter extends Script implements Ending, MouseActions {
 				OverloadPot[0].click("Drink");
 				println("Click sent.");
 			}
+		mouseOffScreen = false;
 	}
 	
 	private int ChangeNextDrink() {
@@ -166,6 +175,11 @@ public class Potter extends Script implements Ending, MouseActions {
 	private int ChangeVaryAmount() {
 		varyAmount = General.random(-4, 0);
 		return varyAmount;
+	}
+	
+	private void MoveMouseOffScreen() {
+		Mouse.leaveGame();
+		mouseOffScreen = true;
 	}
 
 	@SuppressWarnings("deprecation")
